@@ -1,0 +1,14 @@
+<html>
+    <body>
+        {{ results }}<br>
+        {% for x in results %}
+            Image =  {{ x["image"] }}
+            <br>
+            Result = {{ x["result"] }}
+            <br>
+        {% endfor %}
+        {% if still_processing_message!=None %}
+            {{ still_processing_message }}
+        {% endif %}
+    </body>
+</html>
