@@ -122,8 +122,8 @@ def upload_file():
                 print(path)
                 try:
                     upload_file_to_bucket(path, INPUT_BUCKET)
-                except:
-                    return "error has occurred" 
+                except Exception as e:
+                    return str(e)
                 # Delete the file in located at path variable!!
         return redirect(url_for('get_res', total_files = total_files))
         # if file.filename == "":
@@ -150,15 +150,15 @@ def upload_file_to_bucket(file_name, bucket):
     object_name = file_name
     s3_client = boto3.client('s3',
                 region_name='us-east-1',
-                aws_access_key_id=config('ACCESS_KEY'),
-                aws_secret_access_key=config('SECRET_KEY')
+                aws_access_key_id=config('ACCESS_ID'),
+                aws_secret_access_key=config('ACCESS_KEY')
     )
     response = s3_client.upload_file(file_name, bucket, object_name)
 
     sqs = boto3.client('sqs',
                 region_name='us-east-1',
-                aws_access_key_id=config('ACCESS_KEY'),
-                aws_secret_access_key=config('SECRET_KEY')
+                aws_access_key_id=config('ACCESS_ID'),
+                aws_secret_access_key=config('ACCESS_KEY')
     )
     sqs_request = sqs.get_queue_url(QueueName=REQUEST_QUEUE_NAME)
     request_queue_url = str(sqs_request['QueueUrl'])
@@ -170,4 +170,5 @@ def upload_file_to_bucket(file_name, bucket):
             )
     return response
 
-app.run()
+if __name__ == "__main__":
+	app.run(host='0.0.0.0', port = 8080)
